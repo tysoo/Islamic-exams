@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الاختبارات الإسلامية</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f1e8;
+      color: #26352b;
+    }
+
+    header {
+      background: #315b45;
+      color: white;
+      padding: 25px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+
+    .welcome {
+      text-align: center;
+    }
+
+    button {
+      background: #315b45;
+      color: white;
+      border: none;
+      padding: 13px 25px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 8px;
+    }
+
+    button:hover {
+      background: #244634;
+    }
+
+    .option {
+      display: block;
+      width: 100%;
+      text-align: right;
+      background: #f1f4ef;
+      color: #26352b;
+      margin: 10px 0;
+    }
+
+    .option:hover {
+      background: #dfe9e1;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .question-number {
+      color: #315b45;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .result {
+      text-align: center;
+      font-size: 22px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>الاختبارات الإسلامية</h1>
+  <p>اختبر معلوماتك وتابع تقدمك</p>
+</header>
+
+<div class="container">
+
+  <div id="home" class="card welcome">
+    <h2>مرحبًا بك 🌿</h2>
+    <p>جاهز لبدء الاختبار؟</p>
+    <button onclick="startExam()">ابدأ الاختبار</button>
+  </div>
+
+  <div id="exam" class="card hidden">
+    <div id="questionNumber" class="question-number"></div>
+    <h2 id="questionText"></h2>
+
+    <div id="options"></div>
+
+    <button id="nextButton" onclick="nextQuestion()">التالي</button>
+  </div>
+
+  <div id="result" class="card result hidden">
+    <h2>🎉 انتهى الاختبار</h2>
+    <p id="scoreText"></p>
+    <button onclick="restartExam()">إعادة الاختبار</button>
+  </div>
+
+</div>
+
+<script>
+
+const questions = [
+  {
+    question: "كم عدد أركان الإسلام؟",
+    options: ["ثلاثة", "خمسة", "ستة", "سبعة"],
+    answer: 1
+  },
+  {
+    question: "كم عدد الصلوات المفروضة في اليوم والليلة؟",
+    options: ["ثلاث صلوات", "أربع صلوات", "خمس صلوات", "ست صلوات"],
+    answer: 2
+  },
+  {
+    question: "ما أول سورة في المصحف؟",
+    options: ["البقرة", "الفاتحة", "الإخلاص", "الناس"],
+    answer: 1
+  }
+];
+
+let currentQuestion = 0;
+let score = 0;
+let selected = false;
+
+function startExam() {
+  currentQuestion = 0;
+  score = 0;
+
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("exam").classList.remove("hidden");
+
+  showQuestion();
+}
+
+function showQuestion() {
+
+  selected = false;
+
+  const q = questions[currentQuestion];
+
+  document.getElementById("questionNumber").textContent =
+    "السؤال " + (currentQuestion + 1) + " من " + questions.length;
+
+  document.getElementById("questionText").textContent =
+    q.question;
+
+  const optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+
+  q.options.forEach((option, index) => {
+
+    const button = document.createElement("button");
+
+    button.textContent = option;
+    button.className = "option";
+
+    button.onclick = function() {
+      if (selected) return;
+
+      selected = true;
+
+      if (index === q.answer) {
+        score++;
+        button.style.background = "#b8d8c0";
+      } else {
+        button.style.background = "#e8b4b4";
+      }
+    };
+
+    optionsDiv.appendChild(button);
+  });
+
+  if (currentQuestion === questions.length - 1) {
+    document.getElementById("nextButton").textContent = "إنهاء الاختبار";
+  } else {
+    document.getElementById("nextButton").textContent = "التالي";
+  }
+}
+
+function nextQuestion() {
+
+  if (!selected) {
+    alert("اختاري إجابة أولًا");
+    return;
+  }
+
+  currentQuestion++;
+
+  if (currentQuestion < questions.length) {
+    showQuestion();
+  } else {
+    finishExam();
+  }
+}
+
+function finishExam() {
+
+  document.getElementById("exam").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+
+  document.getElementById("scoreText").textContent =
+    "درجتك: " + score + " من " + questions.length;
+}
+
+function restartExam() {
+  startExam();
+}
+
+</script>
+
+</body>
+</html>
